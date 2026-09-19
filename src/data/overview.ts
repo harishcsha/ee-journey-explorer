@@ -1,0 +1,28 @@
+import type { OverviewNode } from '../types';
+
+export const ROOT: string[] = ["retail","indirect","cs","digital"];
+
+export const NODES: Record<string, OverviewNode> = {
+  retail:{label:"Retail",sub:"EE Stores",tag:"Trading channel",kids:[],text:"Customers buy in an EE store. Store staff work with Excalibur (billing), Compass (recommendations) and SAP (fulfilment).",pts:["Sells EE products and services in person"]},
+  indirect:{label:"Indirect",sub:"3rd party channel",tag:"Trading channel",kids:[],text:"EE products and services sold through third-party partners rather than EE-owned channels.",pts:["Not covered further in this deck"]},
+  cs:{label:"Customer Services",sub:"",tag:"Trading channel",kids:[],text:"EE agents who help customers. They use Excalibur, Compass and SAP, and they review and action online orders in Hybris Order Manager.",pts:["Manually fulfils multi-basket digital orders"]},
+  digital:{label:"Digital",sub:"Online channel",tag:"Trading channel",kids:["services","products"],text:"EE's online channel (website and app). It splits in two: Services (looking after an existing account) and Products (buying).",pts:["Services are delivered through My EE","Products are sold through EE Shop"]},
+  services:{label:"Services",sub:"",tag:"Digital channel",kids:["myee"],text:"Everything an existing customer does to manage their account online.",pts:["Delivered through My EE"]},
+  myee:{label:"My EE",sub:"Customer self-service",tag:"Digital services",kids:["myeeweb","myeeapp"],text:"The customer's self-service account. It comes in two forms, a website and an app, each with its own team.",pts:["Existing customers can log in here and continue into the Shop (see Upgrade / Add Line)"]},
+  myeeweb:{label:"My EE Web",sub:"",tag:"Digital services",kids:[],text:"Customer account web self-service system, owned by the My EE Web Digital Team.",pts:[]},
+  myeeapp:{label:"My EE App",sub:"",tag:"Digital services",kids:[],text:"Customer account self-service app, owned by the My EE App Digital Team.",pts:[]},
+  products:{label:"Products",sub:"",tag:"Digital channel",kids:["eeshop"],text:"Everything a customer buys online. All of it goes through EE Shop.",pts:[]},
+  eeshop:{label:"EE Shop",sub:"Focus of this deck",tag:"Digital products",focus:true,kids:["mobile","jrn"],text:"The online store, built on Hybris and run by the Digital E Commerce Team. Orders it takes are recorded in Hybris Order Manager and fulfilled through SAP.",pts:["Sells mobile products","Has three journeys: Acquisition, Upgrade and Add Line"]},
+  mobile:{label:"Mobile products",sub:"What EE Shop sells",tag:"EE Shop",kids:["phone","simo","tablet","mbb","watch"],text:"The mobile product families sold in EE Shop: Phone, SIMO (SIM only), Tablet and MBB (mobile broadband), each sold as PAYM or PAYG, plus Apple Watch.",pts:["Apple Watch sits in the middle of the deck's diagram, without a PAYM/PAYG label"],jump:{tab:"products",label:"See bundles and pricing"}},
+  phone:{label:"Phone",sub:"PAYM / PAYG",tag:"Mobile product",kids:[],text:"Handsets. A voice-type product, so a phone customer can only upgrade to another voice product.",pts:["PAYM is pay monthly and PAYG is pay-as-you-go. Bundles and pricing explains both."]},
+  simo:{label:"SIMO",sub:"PAYM / PAYG",tag:"Mobile product",kids:[],text:"SIM-only plans. They have their own gallery and no Product Details Page. The upgrade-rules slide lists SIMO under both Voice and Data.",pts:["The PDP step is marked N/A for SIMO"]},
+  tablet:{label:"Tablet",sub:"PAYM / PAYG",tag:"Mobile product",kids:[],text:"A data-type product, so it can only upgrade to another data product.",pts:[]},
+  mbb:{label:"MBB",sub:"PAYM / PAYG",tag:"Mobile product",kids:[],text:"Mobile broadband. A data-type product, so it can only upgrade to another data product.",pts:[]},
+  watch:{label:"Apple Watch",sub:"",tag:"Mobile product",kids:[],text:"Shown in the centre of the mobile products diagram.",pts:[]},
+  jrn:{label:"Shop journeys",sub:"New and existing customers",tag:"EE Shop",kids:["acq","upg","add"],text:"Three journeys split by who is shopping. New customers use Acquisition. Existing customers use Upgrade or Add Line.",pts:["New customer: not logged in (L0)","Existing customer: logged in (L2)"]},
+  acq:{label:"Acquisition",sub:"New customers",tag:"Journey",kids:[],text:"A new customer buys a product with EE for the first time. They browse logged out (L0), and their billing account is created in Excalibur when the order goes through.",pts:["Home, Gallery, PDP, Extras, Delivery, Checkout, Order confirmation"],jump:{tab:"acq",label:"Walk through the Acquisition journey"}},
+  upg:{label:"Upgrade",sub:"Existing customers",tag:"Journey",kids:[],text:"An existing customer swaps their current product for a new one. They log in (L2), see personalised recommendations from Compass, and their contract timing decides which kind of upgrade they can have.",pts:["Future, Early, Standard and Annual upgrade windows"],jump:{tab:"upg",jk:"upgrade",label:"Walk through the Upgrade journey"}},
+  add:{label:"Add Line",sub:"Existing customers",tag:"Journey",kids:[],text:"An existing customer adds another line to their EE account. It needs a high enough credit class and an account in good standing.",pts:["No Recommendations page in this journey"],jump:{tab:"upg",jk:"addline",label:"Walk through the Add Line journey"}}
+};
+
+export const TOUR: string[][] = [[],["digital"],["digital","services"],["digital","services","myee"],["digital","products"],["digital","products","eeshop"],["digital","products","eeshop","mobile"],["digital","products","eeshop","jrn"],["digital","products","eeshop","jrn","acq"],["digital","products","eeshop","jrn","upg"],["digital","products","eeshop","jrn","add"]];
