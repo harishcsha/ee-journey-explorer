@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import { Logo } from './components/Logo';
-import { TABS } from './data/tabs';
+import { useEffect, useRef, useState } from 'react';
+import { Footer } from './components/Footer';
+import { NavBar } from './components/NavBar';
 import { AcquisitionTab } from './tabs/AcquisitionTab';
 import { EngineeringTab } from './tabs/EngineeringTab';
 import { ProductsTab } from './tabs/ProductsTab';
@@ -16,6 +16,7 @@ export default function App() {
   const [jk, setJk] = useState<JourneyKey>('upgrade');
   const [focus, setFocus] = useState<SysFocus | null>(null);
   const [theme, setTheme] = useState<'light' | 'dark' | null>(null);
+  const mainRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -28,46 +29,19 @@ export default function App() {
     if (id === 'sys') setFocus({ flow: opts.flow ?? 'acq', sel: opts.sel ?? null, n: Date.now() });
     setTab(id);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Move keyboard focus to the new page content (helps after using the sidebar).
+    requestAnimationFrame(() => mainRef.current?.focus({ preventScroll: true }));
   };
 
-  const flipTheme = () => {
-    const dark = theme ? theme === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
-    setTheme(dark ? 'light' : 'dark');
-  };
+  const prefersDark = () => window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const isDark = theme ? theme === 'dark' : prefersDark();
+  const flipTheme = () => setTheme(isDark ? 'light' : 'dark');
 
   return (
     <div>
-      <header className="top">
-        <div className="top-in">
-          <Logo />
-          <div>
-            <h1>EE Shop Journey Explorer</h1>
-            <div className="crumb">Digital, CRM and Insight, CDS&amp;M, eCommerce</div>
-          </div>
-          <span className="spacer" />
-          <button className="theme" onClick={flipTheme}>
-            Switch light / dark
-          </button>
-        </div>
-      </header>
+      <NavBar tab={tab} isDark={isDark} onSelect={(id) => goto(id)} onToggleTheme={flipTheme} />
 
-      <nav className="nav" aria-label="Sections">
-        <div className="nav-in">
-          {TABS.map((t) => (
-            <button
-              key={t.id}
-              className={`tab ${tab === t.id ? 'on' : ''}`}
-              aria-current={tab === t.id ? 'page' : undefined}
-              onClick={() => goto(t.id)}
-            >
-              <span className="n">{t.n}</span>
-              {t.label}
-            </button>
-          ))}
-        </div>
-      </nav>
-
-      <main className="main">
+      <main className="main" id="main" tabIndex={-1} ref={mainRef}>
         <div className="page" key={tab}>
           {tab === 'overview' && <OverviewTab goto={goto} />}
           {tab === 'acq' && <AcquisitionTab goto={goto} />}
@@ -78,12 +52,9 @@ export default function App() {
           {tab === 'teams' && <TeamsTab goto={goto} />}
           {tab === 'terms' && <TermsTab />}
         </div>
-        <p className="foot">
-          Built from the deck slides 2 to 26 and the OMNI Shop front-end onboarding doc. Page names, URLs, scenario rules,
-          systems, owners, pricing and engineering details follow those sources. Short explanations of what each step does, and the eligibility checker's slider logic, are written to
-          make the flow readable, so check them with your product owner before treating them as policy.
-        </p>
       </main>
+
+      <Footer />
     </div>
   );
 }
